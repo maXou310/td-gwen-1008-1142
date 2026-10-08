@@ -103,11 +103,18 @@ const hudApi = {
 };
 
 const hud = bindHud(hudApi);
+toastFn = hud.showToast;
+bindMenu({
+  onMenuStart: () => { newGame(); audio.play('click'); },
+  onAgain: () => { newGame(); audio.play('click'); }
+});
 const inputCtl = bindInput(canvas, {
   buyAt: hudApi.buyAt,
   selectAt: hudApi.selectAt,
   deselect: hudApi.deselect,
   getSelected: hudApi.getSelected,
+  setSelectedType: (t) => { selectedType = t; },
+  getSelectedType: () => selectedType,
   setHover: (cell) => { hoverCell = cell; }
 });
 
