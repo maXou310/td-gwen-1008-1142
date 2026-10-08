@@ -123,7 +123,9 @@ export function createProjectiles() {
       const dx = e.x - p.x, dy = e.y - p.y;
       if (dx * dx + dy * dy <= rPx * rPx) {
         sim.applyDamage(sim, e, p.dmg, p.x, p.y);
-        sim.onEvent && sim.onEvent({ type: 'hit', x: p.x, y: p.y, dmg: p.dmg });
+        if (!e.dead) {
+          sim.onEvent && sim.onEvent({ type: 'hit', x: p.x, y: p.y, dmg: p.dmg });
+        }
         p.hitSet.add(e.id);
         if (p.hitSet.size >= count) return true;
       }
