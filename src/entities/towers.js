@@ -1,6 +1,7 @@
 // towers.js — tower data + targeting/fire. Arrow fully working; other 4 types
 // are data-only with a stub fireTower (towers job fills them in).
-import { CELL } from '../core/config.js';
+import { CONFIG } from '../core/config.js';
+const CELL = CONFIG.CELL;
 
 export const TOWER_TYPES = {
   arrow:   { name: 'Arrow',   cost: 70,  levels: [

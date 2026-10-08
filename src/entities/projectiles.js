@@ -1,5 +1,6 @@
 // projectiles.js — fixed-pool projectile system (NO allocation in update loop).
-import { CELL } from '../core/config.js';
+import { CONFIG } from '../core/config.js';
+const CELL = CONFIG.CELL;
 
 const POOL_SIZE = 96;
 

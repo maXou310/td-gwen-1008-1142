@@ -1,5 +1,6 @@
 // enemies.js — enemy data + spawn helper + movement.
-import { CELL } from '../core/config.js';
+import { CONFIG } from '../core/config.js';
+const CELL = CONFIG.CELL;
 import { pathLength, pointAt } from '../path/path.js';
 
 export const ENEMY_TYPES = {
