@@ -13,7 +13,7 @@ test('pathLength > 0 and pointAt endpoints', () => {
   assert.ok(pathLength > 0);
   const a = pointAt(0), b = pointAt(1);
   assert.ok(a.x < 0); // spawn off-grid left
-  assert.ok(b.x > 13 * 48); // exit off-grid right
+  assert.equal(b.x, 13 * 48); // path ends exactly at x=13*CELL (leak boundary)
   assert.equal(PATH_CELLS.size, 26);
 });
 
