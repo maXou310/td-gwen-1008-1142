@@ -105,7 +105,9 @@ export function createProjectiles() {
       const t = p.target;
       if (t && !t.dead && !t.leaked) {
         sim.applyDamage(sim, t, p.dmg, x, y);
-        sim.onEvent && sim.onEvent({ type: 'hit', x, y, dmg: p.dmg });
+        if (!t.dead) {
+          sim.onEvent && sim.onEvent({ type: 'hit', x, y, dmg: p.dmg });
+        }
       }
       if (p.slow > 0) applySlow(sim, x, y, p.splash * CELL, p.slow, p.slowDur);
     }
