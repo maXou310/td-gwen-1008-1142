@@ -2,7 +2,7 @@
 // damage+shield, slow stacking, support gold ticks, all events, projectile +
 // particle updates. Damage application lives in ONE function: applyDamage.
 import { CONFIG } from '../core/config.js';
-import { isBuildable, cellCenter } from '../path/path.js';
+import { isBuildable, cellCenter, PATH_CELLS } from '../path/path.js';
 import { TOWER_TYPES, fireTower, getBuffedStats } from '../entities/towers.js';
 import { ENEMY_TYPES, spawnEnemy, moveEnemies } from '../entities/enemies.js';
 import { WAVES } from '../entities/waves.js';
