@@ -1,5 +1,4 @@
-// towers.js — tower data + targeting/fire. Arrow fully working; other 4 types
-// are data-only with a stub fireTower (towers job fills them in).
+// towers.js — tower data + targeting/fire for all 5 types.
 import { CONFIG } from '../core/config.js';
 const CELL = CONFIG.CELL;
 
@@ -27,6 +26,7 @@ export const TOWER_TYPES = {
 };
 
 // Enemy with highest path progress within range of the tower.
+// Range is in PX (level.range * CELL); Euclidean distance to enemy x/y.
 export function acquireTarget(sim, tower) {
   const def = TOWER_TYPES[tower.type];
   const lvl = def.levels[tower.level];
@@ -41,19 +41,20 @@ export function acquireTarget(sim, tower) {
   return best;
 }
 
-// Support has no projectiles: its gold tick happens here (cd used as timer).
-// Returns true when something was "fired" (support: granted gold).
+// Fire one shot / tick. Returns true when something was "fired"
+// (projectile spawned, or support granted its gold tick).
 export function fireTower(sim, tower) {
   const def = TOWER_TYPES[tower.type];
   const lvl = def.levels[tower.level];
 
+  // Support has no projectile: grant goldTick every goldEvery s (cd set by engine).
   if (tower.type === 'support') {
     sim.state.gold += lvl.goldTick;
+    sim.state.goldEarned += lvl.goldTick;
     sim.onEvent && sim.onEvent({ type: 'gold', x: tower.x, y: tower.y, amount: lvl.goldTick });
     return true;
   }
 
-  // Projectile-based towers (arrow working; others share the same spawn path).
   const target = acquireTarget(sim, tower);
   if (!target) return false;
 
@@ -62,21 +63,35 @@ export function fireTower(sim, tower) {
     splash: lvl.splash, slow: lvl.slow, slowDur: lvl.slowDur, pierce: lvl.pierce
   });
   if (!p) return false; // pool exhausted
+
+  // Impact particles are fired here (the pool system does not know particle colors).
+  if (tower.type === 'cannon') {
+    // AoE impact at the target's current position (homing arrival point).
+    sim.particles.burst(target.x, target.y, '#ffb14d', 10, 120, 0.4);
+    sim.particles.ring(target.x, target.y, '#ff7b3d', lvl.splash * CELL * 0.5, 0.35);
+  } else if (tower.type === 'frost') {
+    sim.particles.ring(target.x, target.y, '#7be3ff', lvl.splash * CELL * 0.5, 0.45);
+    sim.particles.spark(target.x, target.y, '#bff4ff', 5);
+  }
+
   sim.onEvent && sim.onEvent({ type: 'shoot', towerType: tower.type, x: tower.x, y: tower.y });
   return true;
 }
 
-// Stats at fire time, including support-aura buffs (+aura to dmg and rate).
+// Stats at fire time, including support-aura buffs.
+// dmg/rate = level value multiplied by the product of (1+aura) from EVERY
+// support tower whose (level.range*CELL) px covers this tower's (x,y).
+// Support itself returns {dmg:0, rate:1} (no shot) but still casts its aura.
 export function getBuffedStats(sim, tower) {
   const def = TOWER_TYPES[tower.type];
   const lvl = def.levels[tower.level];
-  let dmg = lvl.dmg ?? 0;
-  let rate = lvl.rate ?? 0;
+  let dmg = tower.type === 'support' ? 0 : (lvl.dmg ?? 1);
+  let rate = tower.type === 'support' ? 1 : (lvl.rate ?? 1);
   for (const s of sim.towers) {
     if (s === tower || s.type !== 'support' || s.dead) continue;
     const sLvl = TOWER_TYPES.support.levels[s.level];
-    const dx = s.x - tower.x, dy = s.y - tower.y;
     const r = sLvl.range * CELL;
+    const dx = s.x - tower.x, dy = s.y - tower.y;
     if (dx * dx + dy * dy <= r * r) {
       dmg *= (1 + sLvl.aura);
       rate *= (1 + sLvl.aura);
