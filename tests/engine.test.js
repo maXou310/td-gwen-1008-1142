@@ -26,7 +26,8 @@ test('buyTower gold + occupied + path + oob reasons', () => {
   assert.deepEqual(sim.buyTower('arrow', 1, 2), { ok: false, reason: 'occupied' });
   assert.deepEqual(sim.buyTower('arrow', 0, 4), { ok: false, reason: 'path' });
   assert.deepEqual(sim.buyTower('arrow', -1, 0), { ok: false, reason: 'oob' });
-  assert.deepEqual(sim.buyTower('sniper', 12, 0), { ok: false, reason: 'gold' }); // 150 > 190? no, 190>=150 -> buy ok
+  sim.state.gold = 10;
+  assert.deepEqual(sim.buyTower('arrow', 12, 0), { ok: false, reason: 'gold' });
 });
 
 test('sell refund = round(0.7 * invested)', () => {
