@@ -111,7 +111,6 @@ export function createSim({ seed = 1, onEvent } = {}) {
   };
 
   // Single kill path: shield-first, then hp; dead -> kills++ + gold += reward.
-  // Single kill path: shield-first, then hp; dead -> kills++ + gold += reward.
   // Signature per contract: applyDamage(sim, enemy, amount, sourceX, sourceY).
   sim.applyDamage = function (simArg, enemy, amount, sourceX, sourceY) {
     if (enemy.dead || enemy.leaked) return;
