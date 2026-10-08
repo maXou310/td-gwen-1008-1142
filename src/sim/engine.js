@@ -234,8 +234,7 @@ export function createSim({ seed = 1, onEvent } = {}) {
 }
 
 // helper: distinguish 'path' vs 'oob' reason for buyTower
-import { PATH_CELLS } from '../path/path.js';
-function PATH_CELLS_TEST(col, row) {
+function onPathCell(col, row) {
   if (col < 0 || col >= CONFIG.COLS || row < 0 || row >= CONFIG.ROWS) return false;
   return PATH_CELLS.has(`${col},${row}`);
 }
