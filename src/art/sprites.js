@@ -123,22 +123,24 @@ export function drawTower(c, type, level, x, y, cell, t) {
   c.translate(x, y + bob);
 
   // Dark base plate (rounded rect) with a faint accent border.
-  const bs = cell * 0.86;
+  // Scaled up ~7% (was 0.86) so towers read clearly when the grid is
+  // letterboxed small on phone portrait.
+  const bs = cell * 0.92;
   c.fillStyle = 'rgba(13,16,38,.9)';
-  c.strokeStyle = 'rgba(55,230,255,.25)';
-  c.lineWidth = 1;
+  c.strokeStyle = 'rgba(55,230,255,.3)';
+  c.lineWidth = 1.5;
   c.beginPath();
   roundedRectPath(c, -bs / 2, -bs / 2, bs, bs, cell * 0.14);
   c.fill(); c.stroke();
 
-  const r = cell * 0.3; // glyph radius budget (~0.8*CELL body)
+  const r = cell * 0.36; // glyph radius budget (+20% for legibility at small scale)
   switch (type) {
     case 'arrow': {
       // Chevron arrowhead pointing up, static aim; tip twinkles on a 4-frame
       // cycle driven by sin(t*3).
       const twinkle = Math.sin(t * 3) > 0;
       const tipA = twinkle ? 1 : 0.55;
-      neonStroke(c, color, 2.4, () => {
+      neonStroke(c, color, 3.4, () => {
         c.moveTo(-r * 0.85, -r * 0.35);
         c.lineTo(0, r * 0.75);
         c.lineTo(r * 0.85, -r * 0.35);
@@ -167,7 +169,7 @@ export function drawTower(c, type, level, x, y, cell, t) {
       c.fillStyle = hexA('#ffe9cf', 0.9);
       c.fillRect(r * 0.95 + bx, by - r * 0.08, r * 0.18, r * 0.16);
       c.restore();
-      neonStroke(c, color, 2.2, () => polyPath(c, 6, r * 0.72, 0), 1);
+      neonStroke(c, color, 3.2, () => polyPath(c, 6, r * 0.72, 0), 1);
       c.fillStyle = hexA(color, 0.18);
       c.beginPath(); polyPath(c, 6, r * 0.72, 0); c.fill();
       // Core.
@@ -178,7 +180,7 @@ export function drawTower(c, type, level, x, y, cell, t) {
     case 'frost': {
       // Ring + 6-spoke snowflake; spokes rotate slowly (t*0.5 rad/s).
       const rot = t * 0.5;
-      neonStroke(c, color, 2, () => { c.arc(0, 0, r * 0.78, 0, TAU); }, 0.9);
+      neonStroke(c, color, 3, () => { c.arc(0, 0, r * 0.78, 0, TAU); }, 0.9);
       neonStroke(c, color, 1.6, () => {
         for (let i = 0; i < 6; i++) {
           const a = rot + (TAU / 6) * i;
@@ -199,7 +201,7 @@ export function drawTower(c, type, level, x, y, cell, t) {
       // Double ring + pulsing core (radius pulses sin(t*2)*15%+1).
       const pulse = 1 + Math.sin(t * 2) * 0.15;
       const ringA = 0.6 + 0.3 * Math.sin(t * 3);
-      neonStroke(c, color, 1.8, () => { c.arc(0, 0, r * 0.8, 0, TAU); }, ringA);
+      neonStroke(c, color, 2.8, () => { c.arc(0, 0, r * 0.8, 0, TAU); }, ringA);
       neonStroke(c, color, 1.4, () => { c.arc(0, 0, r * 0.5, 0, TAU); }, ringA * 0.8);
       // Pulsing core with soft halo.
       const cr = r * 0.28 * pulse;
@@ -214,7 +216,7 @@ export function drawTower(c, type, level, x, y, cell, t) {
     case 'sniper': {
       // Long diamond + bright laser core line; shimmer alpha 0.7+0.3*sin(t*5).
       const shim = 0.7 + 0.3 * Math.sin(t * 5);
-      neonStroke(c, color, 2, () => {
+      neonStroke(c, color, 3, () => {
         c.moveTo(0, -r * 1.15); c.lineTo(r * 0.42, 0);
         c.lineTo(0, r * 1.15); c.lineTo(-r * 0.42, 0);
         c.closePath();
@@ -481,9 +483,12 @@ export function drawProjectile(c, type, x, y, angle) {
 export function drawTowerIcon(type, level, canvas, px) {
   const c = canvas.getContext('2d');
   c.clearRect(0, 0, canvas.width, canvas.height);
-  c.fillStyle = C.bg;
+  // Slightly brighter backdrop than the board so the icon pops on the dim dock.
+  c.fillStyle = '#131a3a';
   c.fillRect(0, 0, canvas.width, canvas.height);
-  drawTower(c, type, level || 0, canvas.width / 2, canvas.height / 2, px * 0.8, 0);
+  // Draw at a larger cell (was px*0.8) so the glyph fills the button and reads
+  // clearly even when the CSS shrinks the canvas to ~34px on phone.
+  drawTower(c, type, level || 0, canvas.width / 2, canvas.height / 2, px * 0.95, 0);
 }
 
 export function drawEnemyIcon(type, canvas, px) {

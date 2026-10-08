@@ -52,8 +52,18 @@ export function createRenderer(canvas) {
       const [c, r] = key.split(',').map(Number);
       ctx.fillRect(c * CONFIG.CELL, r * CONFIG.CELL, CONFIG.CELL, CONFIG.CELL);
     });
+    // Path outline: wide translucent halo pass underneath + bright core on top.
+    // No ctx.filter/blur. The halo keeps the route legible when the grid is
+    // letterboxed small (phone portrait) where a 2px logical stroke renders <1px.
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(55,230,255,.22)';
+    ctx.lineWidth = 10;
+    PATH_CELLS.forEach(key => {
+      const [c, r] = key.split(',').map(Number);
+      ctx.strokeRect(c * CONFIG.CELL + 1, r * CONFIG.CELL + 1, CONFIG.CELL - 2, CONFIG.CELL - 2);
+    });
     ctx.strokeStyle = '#37e6ff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     PATH_CELLS.forEach(key => {
       const [c, r] = key.split(',').map(Number);
       ctx.strokeRect(c * CONFIG.CELL + 1, r * CONFIG.CELL + 1, CONFIG.CELL - 2, CONFIG.CELL - 2);
@@ -91,9 +101,10 @@ export function createRenderer(canvas) {
       if (e.dead || e.leaked) continue;
       const rPx = ENEMY_TYPES[e.type].r * CONFIG.CELL;
       sprites.drawEnemy(ctx, e.type, e.x, e.y, rPx, sim.state.time, e.hp / e.maxHp);
-      const bw = rPx * 2, bh = 4;
-      const bx2 = e.x - bw / 2, by2 = e.y - rPx - 8;
-      ctx.fillStyle = 'rgba(0,0,0,.5)';
+      // HP bar above enemy: 6px logical (was 4) so it stays ~3px at phone scale.
+      const bw = rPx * 2, bh = 6;
+      const bx2 = e.x - bw / 2, by2 = e.y - rPx - 10;
+      ctx.fillStyle = 'rgba(0,0,0,.6)';
       ctx.fillRect(bx2, by2, bw, bh);
       ctx.fillStyle = '#4dff9c';
       ctx.fillRect(bx2, by2, bw * Math.max(0, e.hp / e.maxHp), bh);
