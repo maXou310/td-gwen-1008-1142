@@ -46,7 +46,7 @@ export function createSim({ seed = 1, onEvent } = {}) {
     const def = TOWER_TYPES[type];
     if (!def) return { ok: false, reason: 'oob' };
     if (!isBuildable(col, row)) {
-      return { ok: false, reason: PATH_CELLS_TEST(col, row) ? 'path' : 'oob' };
+      return { ok: false, reason: onPathCell(col, row) ? 'path' : 'oob' };
     }
     if (towerAt(col, row)) return { ok: false, reason: 'occupied' };
     if (sim.state.gold < def.cost) return { ok: false, reason: 'gold' };
