@@ -1,0 +1,19 @@
+{
+  "name": "TD Gwen",
+  "short_name": "TD Gwen",
+  "description": "Neon tower defense — 15 waves, 5 tower types, boss fight. Offline-ready PWA.",
+  "id": "./",
+  "lang": "en",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "start_url": ".",
+  "scope": ".",
+  "theme_color": "#0b0e22",
+  "background_color": "#0b0e22",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
