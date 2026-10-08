@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TD Gwen — icon canvas</title>
+<style>
+  body { background:#0b0e22; color:#cfe3ff; font-family:system-ui,sans-serif; margin:24px; }
+  h1 { font-size:16px; letter-spacing:.05em; text-transform:uppercase; }
+  canvas { display:block; border:1px solid rgba(55,230,255,.25); margin-bottom:16px; image-rendering:auto; }
+  .lbl { font-size:12px; opacity:.7; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<h1>App icon (art job reuses this renderer)</h1>
+<div class="lbl">512</div><canvas id="icon-512" width="512" height="512"></canvas>
+<div class="lbl">192</div><canvas id="icon-192" width="192" height="192"></canvas>
+<script>
+// Renders the TD Gwen app icon per STYLE.md: neon arrow-tower chevron on
+// #0b0e22 with a rounded-square mask. No external assets.
+const BG = [11, 14, 34];
+const ACCENT = [77, 255, 156];
+const GLOW = [55, 230, 255];
+const CORE = [235, 255, 245];
+
+function drawIcon(canvas) {
+  const size = canvas.width;
+  const c = canvas.getContext('2d');
+  const r = size * 0.18;
+  c.clearRect(0, 0, size, size);
+
+  // Rounded-square clip + background gradient.
+  c.save();
+  c.beginPath();
+  c.moveTo(r, 0);
+  c.arcTo(size, 0, size, size, r);
+  c.arcTo(size, size, 0, size, r);
+  c.arcTo(0, size, 0, 0, r);
+  c.arcTo(0, 0, size, 0, r);
+  c.closePath();
+  c.clip();
+  const g = c.createLinearGradient(0, 0, 0, size);
+  g.addColorStop(0, '#0b0e22');
+  g.addColorStop(1, '#101430');
+  c.fillStyle = g;
+  c.fillRect(0, 0, size, size);
+
+  // Inner edge glow ring.
+  c.strokeStyle = 'rgba(55,230,255,0.5)';
+  c.lineWidth = Math.max(2, size * 0.012);
+  c.strokeRect(c.lineWidth / 2, c.lineWidth / 2, size - c.lineWidth, size - c.lineWidth);
+
+  // Chevron glyph (two strokes meeting at a bottom point), centered.
+  const cx = size / 2, cy = size / 2, s = size * 0.28;
+  const stroke = size * 0.075;
+  function chevron() {
+    c.beginPath();
+    c.moveTo(cx - s, cy - 0.6 * s);
+    c.lineTo(cx, cy + 0.6 * s);
+    c.lineTo(cx + s, cy - 0.6 * s);
+  }
+  c.lineJoin = 'round';
+  c.lineCap = 'round';
+  // Soft outer glow (layered translucent strokes, no ctx.filter/blur).
+  for (let i = 3; i >= 1; i--) {
+    c.strokeStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${0.12 * i})`;
+    c.lineWidth = stroke + i * size * 0.03;
+    chevron();
+    c.stroke();
+  }
+  // Core stroke with bright center.
+  c.strokeStyle = 'rgba(' + CORE.join(',') + ',1)';
+  c.lineWidth = stroke * 0.45;
+  chevron();
+  c.stroke();
+  c.strokeStyle = 'rgba(' + ACCENT.join(',') + ',1)';
+  c.lineWidth = stroke;
+  chevron();
+  c.stroke();
+  c.restore();
+}
+
+drawIcon(document.getElementById('icon-512'));
+drawIcon(document.getElementById('icon-192'));
+</script>
+</body>
+</html>
