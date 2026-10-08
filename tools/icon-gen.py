@@ -1,6 +1,6 @@
-// icon-gen.py — one-off generator for icons/icon-192.png and icons/icon-512.png.
-// Draws the app icon per STYLE.md: neon arrow-tower chevron on #0b0e22,
-// rounded-square mask. Run: python3 tools/icon-gen.py
+# icon-gen.py — one-off generator for icons/icon-192.png and icons/icon-512.png.
+# Draws the app icon per STYLE.md: neon arrow-tower chevron on #0b0e22,
+# rounded-square mask. Run: python3 tools/icon-gen.py
 import math
 import struct
 import zlib
