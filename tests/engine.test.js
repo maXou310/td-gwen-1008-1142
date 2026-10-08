@@ -45,6 +45,7 @@ test('upgrade gold math + max level', () => {
   let r = sim.upgradeTower(1, 2);
   assert.deepEqual(r, { ok: true, cost: 80 });
   assert.equal(sim.state.gold, 260 - 70 - 80);
+  sim.state.gold = 500;
   sim.upgradeTower(1, 2); // to level 2, cost 150
   assert.deepEqual(sim.upgradeTower(1, 2), { ok: false, reason: 'max' });
   assert.deepEqual(sim.upgradeTower(5, 5), { ok: false, reason: 'notfound' });
