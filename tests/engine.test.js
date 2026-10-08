@@ -59,8 +59,8 @@ test('interest capped at INTEREST_CAP on waveClear', () => {
   // Spawn the wave's grunts then kill them via applyDamage.
   // Simpler: run ticks until all spawned, then damage each enemy to death.
   tickTo(sim, 10);
-  while (sim.enemies.length) {
-    const e = sim.enemies[0];
+  while (sim.enemies.some(e => !e.dead && !e.leaked)) {
+    const e = sim.enemies.find(e => !e.dead && !e.leaked);
     sim.applyDamage(sim, e, e.hp + e.shield + 100, 0, 0);
   }
   sim.tick(1 / 60);
