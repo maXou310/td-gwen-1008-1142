@@ -104,7 +104,8 @@ const hudApi = {
 
 const hud = bindHud(hudApi);
 toastFn = hud.showToast;
-bindMenu({
+const menuCtl = bindMenu({
+  getState: () => hudApi.getState(),
   onMenuStart: () => { newGame(); audio.play('click'); },
   onAgain: () => { newGame(); audio.play('click'); }
 });
@@ -152,6 +153,7 @@ function frame(now) {
     speed: sim.state.speed
   });
   hud.sync();
+  menuCtl.sync();
   requestAnimationFrame(frame);
 }
 
