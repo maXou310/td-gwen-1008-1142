@@ -169,6 +169,11 @@ window.__game = {
   togglePause: () => { paused = !paused; },
   startWaveNow: () => { sim.startWave(); },
   selectAt: (c, r) => { selectedCell = { col: c, row: r }; },
+  deselect: () => { selectedCell = null; },
+  getSelected: () => selectedCell,
+  setSelectedType: (t) => { selectedType = t; },
+  getSelectedType: () => selectedType,
+  getEnemies: () => sim.enemies.map(e => ({ type: e.type, hp: e.hp })),
   getState: () => sim.state
 };
 
