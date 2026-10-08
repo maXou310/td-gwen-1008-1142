@@ -71,11 +71,12 @@ function newGame() {
 }
 
 // ---- HUD API -------------------------------------------------------------
+let toastFn = () => {};
 const hudApi = {
   getSim: () => sim,
   buyAt: (type, c, r) => {
     const res = sim.buyTower(type, c, r);
-    if (!res.ok && res.reason === 'gold') hud.showToast('Not enough gold');
+    if (!res.ok && res.reason === 'gold') toastFn('Not enough gold');
     return res;
   },
   upgradeAt: (c, r) => sim.upgradeTower(c, r),
