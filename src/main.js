@@ -5,6 +5,7 @@ import { createSim } from './sim/engine.js';
 import { createRenderer } from './render/renderer.js';
 import { bindInput } from './ui/input.js';
 import { bindHud } from './ui/hud.js';
+import { bindMenu } from './ui/menu.js';
 import { TOWER_TYPES } from './entities/towers.js';
 import { audio } from './audio/audio.js';
 import { registerSW } from './pwa/register.js';
